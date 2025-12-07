@@ -16,7 +16,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /home/linuxuser/tinyexp/server
+            cd /home/linuxuser/tinyexp/backend
             git pull origin main
             npm install
             pm2 restart server
