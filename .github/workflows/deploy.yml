@@ -17,6 +17,7 @@ jobs:
           port: 22
           script: |
             cd /home/linuxuser/tinyexp/backend
-            git pull origin main
+            git fetch --all
+            git reset --hard origin/main
             npm install
             pm2 restart server
