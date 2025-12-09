@@ -6,10 +6,7 @@ import { ApiResponse } from "../types/controller.type";
 
 export class ActivityLogsController {
     private service = new ActivityLogsService();
-    
     create = async (req: Request<{},{},ActivityLogsCreateRequest>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
-        console.log(req.body)
-        console.log(req.params)
         const input:ActivityLogsCreateInput = {
             activityid:req.body.activityid,
             activityvalue:req.body.activityvalue,
@@ -77,8 +74,6 @@ export class ActivityLogsController {
     }
 
     update = async (req: Request<{id?:number},{},ActivityLogsUpdateRequest>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
-        console.log(req.body)
-        console.log(req.params)
         const input:ActivityLogsUpdateInput = {
             activityid:req.body.activityid,
             activityvalue:req.body.activityvalue,
