@@ -1,11 +1,11 @@
 import * as z from 'zod';
 
 export const ActivityLogsCreateRequestSchema = z.object({
-  activityid: z.number().int('activityid must be a number').meta({
+  activityid: z.number('activityid must be a number').int('activityid must be a decimal number').meta({
     description: 'Activity ID',
     example: 1
   }),
-  activityvalue: z.number().int('activityvalue must be a number').min(0, "activityvalue must be bigger then zero").meta({
+  activityvalue: z.number().int('activityvalue must be a number').min(1, "activityvalue must be bigger then zero").meta({
     description: 'Activity value (must be greater than zero)',
     example: 5000
   }),
@@ -32,11 +32,11 @@ export const ActivityLogsQueryRequestSchema = z.object({
 });
 
 export const ActivityLogsUpdateRequestSchema = z.object({
-  activityid: z.number().int('activityid must be a number').optional().meta({
+  activityid: z.number('activityid must be a number').int('activityid must be a decimal number').meta({
     description: 'Activity ID',
     example: 1
-  }),
-  activityvalue: z.number().int('activityvalue must be a number').optional().meta({
+  }).optional(),
+  activityvalue: z.number('activityvalue must be a number').min(1, "activityvalue must be bigger then zero").meta({
     description: 'Activity value (must be greater than zero)',
     example: 6000
   }),

@@ -15,7 +15,7 @@ export const ActivityCreateRequestSchema = z.object({
     description: 'Tracking type ID',
     example: 1
   }),
-  minvalue: z.number()
+  minvalue: z.number("minvalue must be a number")
     .min(1, 'minvalue must be at least 1')
     .meta({
       description: 'Minimum required value for exp calculation',
