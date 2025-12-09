@@ -1,0 +1,22 @@
+name: Deploy Backend
+on:
+  push:
+    branches:
+      - main  # Sadece main'e kod gelince calisir
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd /home/linuxuser/tinyexp/backend
+            git pull origin main
+            npm install
+            pm2 restart server
