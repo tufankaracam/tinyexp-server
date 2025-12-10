@@ -13,7 +13,6 @@ route.post('/',validateRequest(CategoryCreateRequestSchema,'body'),asyncHandler(
 route.get('/',validateRequest(CategoryQueryRequestSchema,'query'),asyncHandler(controller.findAll));
 route.get('/character',validateRequest(CategoryQueryRequestSchema,'query'),asyncHandler(controller.getCharacterData));
 route.get('/:id',validateRequest(IdParamSchema,'params'),asyncHandler(controller.findById));
-route.get('/:id',validateRequest(IdParamSchema,'params'),asyncHandler(controller.findById));
 route.put('/:id',validateRequest(CategoryUpdateRequestSchema,'body'),asyncHandler(controller.update));
 route.delete('/:id',validateRequest(IdParamSchema,'params'),asyncHandler(controller.delete));
 

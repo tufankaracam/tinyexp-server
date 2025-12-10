@@ -3,6 +3,7 @@ import * as z from 'zod';
 import { TrackingTypeService } from "../services/trackingtypes.service";
 import {TrackingTypeResponse,TrackingTypeCreateRequest,TrackingTypeQueryRequest,TrackingTypeUpdateRequest,TrackingTypeOutput,TrackingTypeCreateInput, TrackingTypeUpdateInput, TrackingTypeQueryInput} from '../types/trackingtypes.type';
 import { ApiResponse } from "../types/controller.type";
+import AppError from "../types/error.type";
 
 export class TrackingTypeController {
     private service = new TrackingTypeService();
@@ -82,6 +83,11 @@ export class TrackingTypeController {
     }
 
     delete = async(req:Request,res:Response<ApiResponse<boolean>>,next:NextFunction): Promise<void>=>{
+        const subResult = await this.service.checkByActivity(Number(req.params.id),req.user!.id);
+        if(subResult.length > 0){
+            throw new AppError(400,"Tracking Type in use!");
+        }
+
         const result = await this.service.delete(Number(req.params.id),req.user!.id);
         res.status(200).json({
             success: true,

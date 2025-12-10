@@ -1,11 +1,16 @@
 import { ActivityRepository } from "../repositories/activities.repository";
 import { ActivityQueryDto, ActivityCreateDto, ActivityUpdateDto, ActivityCreateInput, ActivityOutput, ActivityQueryInput, ActivityUpdateInput } from "../types/activities.type";
+import AppError from "../types/error.type";
 
 export class ActivityService {
     private repository = new ActivityRepository();
 
     create = async (input: ActivityCreateInput): Promise<ActivityOutput> => {
         try {
+            const isExist = await this.repository.findByName(input.name, input.userid);
+            if (isExist) {
+                throw new AppError(400, 'Activity is already exists!');
+            }
             const newCategory: ActivityCreateDto = {
                 name: input.name,
                 subcategoryid: input.subcategoryid,
@@ -43,7 +48,7 @@ export class ActivityService {
                     subcategoryid: result.subcategoryid,
                     trackingtypeid: result.trackingtypeid,
                     minvalue: result.minvalue,
-                    trackingtypename:result.trackingtypename!
+                    trackingtypename: result.trackingtypename!
                 }
 
                 return output;
@@ -68,7 +73,7 @@ export class ActivityService {
         const result = await this.repository.findAll(dto);
 
         const output: ActivityOutput[] = result.map(r => {
-            const o: ActivityOutput = { id: r.id, name: r.name, subcategoryid: r.subcategoryid, trackingtypeid: r.trackingtypeid, minvalue: r.minvalue,activityexp:r.activityexp,activityvalue:r.activityvalue,activitylogcount:r.activitylogcount,trackingtypename:r.trackingtypename }
+            const o: ActivityOutput = { id: r.id, name: r.name, subcategoryid: r.subcategoryid, trackingtypeid: r.trackingtypeid, minvalue: r.minvalue, activityexp: r.activityexp, activityvalue: r.activityvalue, activitylogcount: r.activitylogcount, trackingtypename: r.trackingtypename }
             return o;
         })
 
@@ -76,6 +81,10 @@ export class ActivityService {
     }
 
     update = async (id: number, input: ActivityUpdateInput): Promise<ActivityOutput> => {
+        const isExist = await this.repository.findByName(input.name, input.userid);
+        if (isExist && isExist.id != id) {
+            throw new AppError(400, 'Activity name is already used!');
+        }
         const dto: ActivityUpdateDto = { id: id, name: input.name, userid: input.userid, minvalue: input.minvalue, subcategoryid: input.subcategoryid, trackingtypeid: input.trackingtypeid };
         const result = await this.repository.update(dto);
         const output: ActivityOutput = { id: result.id, name: result.name, subcategoryid: result.subcategoryid, trackingtypeid: result.trackingtypeid, minvalue: result.minvalue };

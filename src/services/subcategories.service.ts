@@ -1,12 +1,16 @@
 import { SubCategoryRepository } from "../repositories/subcategories.repository";
+import AppError from "../types/error.type";
 import { SubCategoryQueryDto, SubCategoryCreateDto, SubCategoryUpdateDto, SubCategoryCreateInput, SubCategoryOutput, SubCategoryQueryInput, SubCategoryUpdateInput } from "../types/subcategories.type";
 
 export class SubCategoryService {
     private repository = new SubCategoryRepository();
 
     create = async (input: SubCategoryCreateInput): Promise<SubCategoryOutput> => {
-        console.log(input);
         try {
+            const isExist = await this.repository.findByName(input.name, input.userid);
+            if (isExist) {
+                throw new AppError(400, 'Subcategory is already exists!');
+            }
             const newCategory: SubCategoryCreateDto = {
                 name: input.name,
                 categoryid: input.categoryid,
@@ -62,7 +66,7 @@ export class SubCategoryService {
         const result = await this.repository.findAll(dto);
 
         const output: SubCategoryOutput[] = result.map(r => {
-            const o: SubCategoryOutput = { id: r.id, name: r.name, categoryid: r.categoryid, activityvalue: r.activityvalue, activitycount: r.activitycount, activityexp: r.activityexp ,activitylogcount:r.activitylogcount}
+            const o: SubCategoryOutput = { id: r.id, name: r.name, categoryid: r.categoryid, activityvalue: r.activityvalue, activitycount: r.activitycount, activityexp: r.activityexp, activitylogcount: r.activitylogcount }
             return o;
         })
 
@@ -70,6 +74,10 @@ export class SubCategoryService {
     }
 
     update = async (id: number, input: SubCategoryUpdateInput): Promise<SubCategoryOutput> => {
+        const isExist = await this.repository.findByName(input.name, input.userid);
+        if (isExist && isExist.id != id) {
+            throw new AppError(400, 'Subcategory name is already used!');
+        }
         const dto: SubCategoryUpdateDto = { id: id, name: input.name, userid: input.userid, categoryid: input.categoryid };
         const result = await this.repository.update(dto);
         const output: SubCategoryOutput = { id: result.id, name: result.name, categoryid: result.categoryid };
