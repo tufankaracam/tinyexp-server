@@ -33,6 +33,20 @@ export class CategoryRepository {
         }
     }
 
+    findByName = async (name: string, userid: number): Promise<CategoryDbo | null> => {
+        try {
+            const sql = 'select * from `categories` where `name` = ? and `userid`=?';
+            const [rows] = await pool.query(sql, [name, userid]) as any;
+
+            return rows[0] || null;
+        }
+        catch (err) {
+            const error = err as Error;
+            console.error(`Database Error : ${error.message}`);
+            throw error;
+        }
+    }
+
     findAll = async (query: CategoryQueryDto): Promise<CategoryDbo[]> => {
         try {
             // 1. Zincirleme 3 adet LEFT JOIN ile en alt tabloya ulaşıyoruz.

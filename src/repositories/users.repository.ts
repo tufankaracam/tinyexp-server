@@ -3,15 +3,15 @@ import pool from '../db';
 import { UserRegisterDto, UserDbo } from '../types/users.type';
 
 export class UserRepository {
-    create = async (params: UserRegisterDto):Promise<UserDbo> => {
+    create = async (params: UserRegisterDto): Promise<UserDbo> => {
         try {
             const sql = 'insert into users(`email`,`username`,`password`) values(?,?,?)';
-            const [result] = await pool.execute<ResultSetHeader>(sql, [params.email,params.username,params.hashedpassword]);
+            const [result] = await pool.execute<ResultSetHeader>(sql, [params.email, params.username, params.hashedpassword]);
             return {
-                id:result.insertId,
-                username:params.username,
-                email:params.email,
-                password:params.hashedpassword
+                id: result.insertId,
+                username: params.username,
+                email: params.email,
+                password: params.hashedpassword
             }
         }
         catch (err) {
@@ -21,7 +21,7 @@ export class UserRepository {
         }
     }
 
-    findById = async (id: number):Promise<UserDbo | null> => {
+    findById = async (id: number): Promise<UserDbo | null> => {
         try {
             const sql = 'select * from `users` where `id` = ?';
             const [rows] = await pool.query(sql, [id]) as any;
@@ -35,11 +35,10 @@ export class UserRepository {
         }
     }
 
-    findByEmail = async (email: string):Promise<UserDbo | null> => {
+    findByEmail = async (email: string): Promise<UserDbo | null> => {
         try {
             const sql = 'select * from `users` where `email` = ?';
             const [rows] = await pool.query(sql, [email]) as any;
-
             return rows[0] || null;
         }
         catch (err) {
@@ -49,7 +48,7 @@ export class UserRepository {
         }
     }
 
-    findAll = async ():Promise<UserDbo[]> => {
+    findAll = async (): Promise<UserDbo[]> => {
         try {
             let sql = 'SELECT * FROM `users`';
             const [rows] = await pool.query(sql) as any;
@@ -62,13 +61,13 @@ export class UserRepository {
         }
     }
 
-    delete = async(id:number):Promise<boolean>=>{
-        try{
+    delete = async (id: number): Promise<boolean> => {
+        try {
             const query = 'DELETE FROM `users` where `id` = ?';
-            const [result,fields] = await pool.execute<ResultSetHeader>(query,[id]);
+            const [result, fields] = await pool.execute<ResultSetHeader>(query, [id]);
             return result.affectedRows > 0;
         }
-        catch(err){
+        catch (err) {
             const error = err as Error;
             console.error(`Database Error : ${error.message}`);
             throw error;

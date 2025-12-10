@@ -10,6 +10,11 @@ export class AuthService {
 
     register = async (input: UserRegisterInput): Promise<UserRegisterOutput> => {
         try {
+
+            const exists = await this.repository.findByEmail(input.email);
+            if(exists){
+                throw new AppError(400,"Email adress is already exist");
+            }
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(input.password, salt);
 

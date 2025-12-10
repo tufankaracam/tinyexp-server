@@ -5,6 +5,7 @@ import { CategoryResponse, CategoryCreateRequest, CategoryQueryRequest, Category
 import { ApiResponse } from "../types/controller.type";
 import { IdParamRequest } from "../types/commons.type";
 import { SubCategoryService } from "../services/subcategories.service";
+import AppError from "../types/error.type";
 
 export class CategoryController {
     private service = new CategoryService();
@@ -98,6 +99,10 @@ export class CategoryController {
     }
 
     delete = async (req: Request, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
+        const subResult = await this.subService.findAll({categoryid:Number(req.params.id),userid:req.user!.id});
+        if(subResult.length > 0){
+            throw new AppError(400,"Category has items!");
+        }
         const result = await this.service.delete(Number(req.params.id),req.user!.id);
         res.status(200).json({
             success: true,

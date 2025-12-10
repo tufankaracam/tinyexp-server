@@ -13,7 +13,7 @@ export class ActivityRepository {
                 name: params.name,
                 subcategoryid: params.subcategoryid,
                 trackingtypeid: params.trackingtypeid,
-                minvalue:params.minvalue
+                minvalue: params.minvalue
             }
         }
         catch (err) {
@@ -37,9 +37,23 @@ export class ActivityRepository {
         }
     }
 
+    findByName = async (name: string, userid: number): Promise<ActivityDbo | null> => {
+        try {
+            const sql = 'select a.*,tt.name trackingtypename from activities a left join trackingtypes tt on a.trackingtypeid = tt.id where a.name = ? and a.userid = ?';
+            const [rows] = await pool.query(sql, [name, userid]) as any;
+
+            return rows[0] || null;
+        }
+        catch (err) {
+            const error = err as Error;
+            console.error(`Database Error : ${error.message}`);
+            throw error;
+        }
+    }
+
     findAll = async (query: ActivityQueryDto): Promise<ActivityDbo[]> => {
-    try {
-        let sql = `
+        try {
+            let sql = `
             SELECT 
                 a.*,
                 tt.name trackingtypename, 
@@ -51,43 +65,43 @@ export class ActivityRepository {
             LEFT JOIN trackingtypes tt on a.trackingtypeid = tt.id
             WHERE a.userid = ?
         `;
-        
-        const params: any[] = [];
-        params.push(query.userid);
 
-        if (query.name) {
-            sql += ' AND a.name LIKE ?';
-            params.push(`%${query.name}%`);
+            const params: any[] = [];
+            params.push(query.userid);
+
+            if (query.name) {
+                sql += ' AND a.name LIKE ?';
+                params.push(`%${query.name}%`);
+            }
+
+            if (query.subcategoryid) {
+                sql += ' AND a.subcategoryid = ?';
+                params.push(`${query.subcategoryid}`);
+            }
+
+            if (query.trackingtypeid) {
+                sql += ' AND a.trackingtypeid = ?';
+                params.push(`%${query.trackingtypeid}%`);
+            }
+
+            sql += ' GROUP BY a.id';
+
+            const [rows] = await pool.query(sql, params) as any;
+
+            return rows;
         }
-
-        if (query.subcategoryid) {
-            sql += ' AND a.subcategoryid = ?';
-            params.push(`${query.subcategoryid}`);
+        catch (err) {
+            const error = err as Error;
+            console.error(`Database Error : ${error.message}`);
+            throw error;
         }
-
-        if (query.trackingtypeid) {
-            sql += ' AND a.trackingtypeid = ?'; 
-            params.push(`%${query.trackingtypeid}%`); 
-        }
-
-        sql += ' GROUP BY a.id';
-
-        const [rows] = await pool.query(sql, params) as any;
-
-        return rows;
     }
-    catch (err) {
-        const error = err as Error;
-        console.error(`Database Error : ${error.message}`);
-        throw error;
-    }
-}
 
     update = async (params: ActivityUpdateDto): Promise<ActivityDbo> => {
         try {
             console.log(params);
             const query = 'UPDATE `activities` SET `name` = ?,`minvalue` = ?,`subcategoryid` = ? , `trackingtypeid` = ? where `id` = ? and `userid` = ?';
-            const [result, fields] = await pool.execute<ResultSetHeader>(query, [params.name, params.minvalue,params.subcategoryid,params.trackingtypeid, params.id, params.userid]);
+            const [result, fields] = await pool.execute<ResultSetHeader>(query, [params.name, params.minvalue, params.subcategoryid, params.trackingtypeid, params.id, params.userid]);
             const updatedData = await this.findById(params.id, params.userid);
             return updatedData!;
 

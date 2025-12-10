@@ -1,14 +1,21 @@
 import { CategoryRepository } from "../repositories/categories.repository";
+import { SubCategoryRepository } from "../repositories/subcategories.repository";
 import { CategoryCreateInput, CategoryOutput, CategoryQueryInput, CategoryUpdateInput, CategoryQueryDto, CategoryCreateDto, CategoryUpdateDto } from "../types/categories.type";
 import AppError from "../types/error.type";
 
 export class CategoryService {
     private repository = new CategoryRepository();
-
+    private subRepository = new SubCategoryRepository();
+    
     create = async (input: CategoryCreateInput): Promise<CategoryOutput> => {
         try {
+            const isExist = await this.repository.findByName(input.name, input.userid);
+            if (isExist) {
+                throw new AppError(400, 'Category is already exists!');
+            }
+
             const newCategory: CategoryCreateDto = {
-                name: input.name,
+                name: input.name.toLowerCase(),
                 userid: input.userid
             }
             const data = await this.repository.create(newCategory);
@@ -59,9 +66,9 @@ export class CategoryService {
 
         const output: CategoryOutput[] = result.map(r => {
             const o: CategoryOutput = {
-                id: r.id, name: r.name, 
-                activitycount: r?.activitycount, 
-                activitylogcount: r.activitylogcount, 
+                id: r.id, name: r.name,
+                activitycount: r?.activitycount,
+                activitylogcount: r.activitylogcount,
                 subcategorycount: r.subcategorycount,
                 activityexp: r?.activityexp,
                 activityvalue: r?.activityvalue
@@ -81,13 +88,13 @@ export class CategoryService {
 
         const output: CategoryOutput[] = result.map(r => {
             const o: CategoryOutput = {
-                id: r.id, name: r.name, 
-                activitycount: r?.activitycount, 
-                activitylogcount: r.activitylogcount, 
+                id: r.id, name: r.name,
+                activitycount: r?.activitycount,
+                activitylogcount: r.activitylogcount,
                 subcategorycount: r.subcategorycount,
                 activityexp: r?.activityexp,
                 activityvalue: r?.activityvalue,
-                categorycount:r?.categorycount
+                categorycount: r?.categorycount
             }
             return o;
         })
@@ -96,6 +103,10 @@ export class CategoryService {
     }
 
     update = async (id: number, input: CategoryUpdateInput): Promise<CategoryOutput> => {
+        const isExist = await this.repository.findByName(input.name, input.userid);
+        if (isExist && isExist.id != id) {
+            throw new AppError(400, 'Category name is already used!');
+        }
         const dto: CategoryUpdateDto = { id: id, name: input.name, userid: input.userid };
         const result = await this.repository.update(dto);
         const output: CategoryOutput = { id: result.id, name: result.name };
@@ -104,6 +115,7 @@ export class CategoryService {
 
     delete = async (id: number, userid: number): Promise<boolean> => {
         try {
+            
             const result = await this.repository.delete(id, userid);
             return result;
         }

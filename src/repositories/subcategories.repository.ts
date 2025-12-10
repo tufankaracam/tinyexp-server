@@ -35,10 +35,21 @@ export class SubCategoryRepository {
         }
     }
 
+    findByName = async (name: string, userid: number): Promise<SubCategoryDbo | null> => {
+        try {
+            const sql = 'select * from `subcategories` where `name` = ? and `userid` = ?';
+            const [rows] = await pool.query(sql, [name, userid]) as any;
+            return rows[0] || null;
+        }
+        catch (err) {
+            const error = err as Error;
+            console.error(`Database Error : ${error.message}`);
+            throw error;
+        }
+    }
+
     findAll = async (query: SubCategoryQueryDto): Promise<SubCategoryDbo[]> => {
         try {
-            // 1. SubCategories (sc) -> Activities (a) -> ActivityLogs (al)
-            // Zincirleme 2 tane LEFT JOIN kullanıyoruz.
             let sql = `
             SELECT 
                 sc.*, 
@@ -55,7 +66,6 @@ export class SubCategoryRepository {
             const params: any[] = [];
             params.push(query.userid);
 
-            // 2. Filtrelerde karışıklık olmasın diye 'sc.' alias'ını (takma adını) kullanıyoruz.
             if (query.name) {
                 sql += ' AND sc.name LIKE ?';
                 params.push(`%${query.name}%`);
@@ -66,7 +76,6 @@ export class SubCategoryRepository {
                 params.push(query.categoryid);
             }
 
-            // 3. Hesaplamaların her bir alt kategori satırı için tek tek yapılması için GROUP BY ekliyoruz.
             sql += ' GROUP BY sc.id';
 
             const [rows] = await pool.query(sql, params) as any;
