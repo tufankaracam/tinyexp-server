@@ -42,7 +42,8 @@ export class ActivityService {
                     name: result.name,
                     subcategoryid: result.subcategoryid,
                     trackingtypeid: result.trackingtypeid,
-                    minvalue: result.minvalue
+                    minvalue: result.minvalue,
+                    trackingtypename:result.trackingtypename!
                 }
 
                 return output;
@@ -67,7 +68,7 @@ export class ActivityService {
         const result = await this.repository.findAll(dto);
 
         const output: ActivityOutput[] = result.map(r => {
-            const o: ActivityOutput = { id: r.id, name: r.name, subcategoryid: r.subcategoryid, trackingtypeid: r.trackingtypeid, minvalue: r.minvalue,activityexp:r.activityexp,activityvalue:r.activityvalue,activitylogcount:r.activitylogcount }
+            const o: ActivityOutput = { id: r.id, name: r.name, subcategoryid: r.subcategoryid, trackingtypeid: r.trackingtypeid, minvalue: r.minvalue,activityexp:r.activityexp,activityvalue:r.activityvalue,activitylogcount:r.activitylogcount,trackingtypename:r.trackingtypename }
             return o;
         })
 

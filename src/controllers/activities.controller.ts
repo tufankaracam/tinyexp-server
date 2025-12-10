@@ -43,6 +43,7 @@ export class ActivityController {
                 subcategoryid: result.subcategoryid,
                 trackingtypeid: result.trackingtypeid,
                 minvalue:result.minvalue,
+                trackingtypename:result.trackingtypename,
                 data:subResult
             }
             res.status(200).json({

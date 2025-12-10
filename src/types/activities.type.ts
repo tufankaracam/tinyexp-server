@@ -68,6 +68,7 @@ export interface ActivityResponse {
   name: string,
   subcategoryid: number,
   trackingtypeid: number,
+  trackingtypename?:string,
   minvalue: number,
   data?: ActivityLogsOutput[]
 }
@@ -81,6 +82,7 @@ export interface ActivityOutput {
   name: string,
   subcategoryid: number,
   trackingtypeid: number,
+  trackingtypename?: string,
   minvalue: number,
   activityvalue?: number,
   activityexp?: number,
@@ -140,6 +142,7 @@ export interface ActivityDbo {
   name: string,
   subcategoryid: number,
   trackingtypeid: number,
+  trackingtypename?: string,
   minvalue: number,
   activityvalue?: number,
   activityexp?: number,
