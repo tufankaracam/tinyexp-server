@@ -25,7 +25,7 @@ export class ActivityRepository {
 
     findById = async (id: number, userid: number): Promise<ActivityDbo | null> => {
         try {
-            const sql = 'select * from `activities` where `id` = ? and `userid` = ?';
+            const sql = 'select a.*,tt.name trackingtypename from activities a left join trackingtypes tt on a.trackingtypeid = tt.id where a.id = ? and a.userid = ?';
             const [rows] = await pool.query(sql, [id, userid]) as any;
 
             return rows[0] || null;
@@ -41,12 +41,14 @@ export class ActivityRepository {
     try {
         let sql = `
             SELECT 
-                a.*, 
+                a.*,
+                tt.name trackingtypename, 
                 COUNT(al.id) as activitylogcount, 
                 COALESCE(SUM(al.activityvalue), 0) as activityvalue, 
                 COALESCE(SUM(al.activityexp), 0) as activityexp
             FROM activities a
             LEFT JOIN activitylogs al ON a.id = al.activityid
+            LEFT JOIN trackingtypes tt on a.trackingtypeid = tt.id
             WHERE a.userid = ?
         `;
         
