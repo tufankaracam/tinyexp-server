@@ -34,6 +34,20 @@ export class UserRepository {
             throw error;
         }
     }
+    
+    updatePassword = async (id: number,hashedpassword:string): Promise<boolean> => {
+        try {
+            const sql = 'update users set password = ? where id = ?';
+            const [result] = await pool.execute<ResultSetHeader>(sql, [hashedpassword, id]);
+            return true;
+        }
+        catch (err) {
+            const error = err as Error;
+            console.error(`Database Error : ${error.message}`);
+            throw error;
+        }
+    }
+
 
     findByEmail = async (email: string): Promise<UserDbo | null> => {
         try {

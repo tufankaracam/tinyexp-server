@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as z from 'zod';
 import { AuthService } from "../services/auth.service";
-import { UserLoginInput, UserLoginRequest, UserLoginResponse, UserRegisterInput, UserRegisterRequest, UserRegisterResponse } from '../types/users.type';
+import { UserLoginInput, UserLoginRequest, UserLoginResponse, UserPasswordChangeInput, UserPasswordChangeRequest, UserRegisterInput, UserRegisterRequest, UserRegisterResponse } from '../types/users.type';
 import { ApiResponse } from "../types/controller.type";
 
 export class AuthController {
@@ -45,6 +45,22 @@ export class AuthController {
         res.status(200).json({
             success:true,
             message:"Login succesful!",
+            data:output,
+            timestamp:new Date().toISOString()
+        })
+    }
+    changePassword = async(req:Request<{},{},UserPasswordChangeRequest>,res:Response<ApiResponse<boolean>>,next:NextFunction):Promise<void>=>{
+        const input:UserPasswordChangeInput = {
+            id:req.user?.id!,
+            oldpassword:req.body.oldpassword,
+            password:req.body.password,
+            password2:req.body.password2
+        };
+        const output = await this.service.changePassword(input);
+
+        res.status(200).json({
+            success:true,
+            message:"Password changed succesfully!",
             data:output,
             timestamp:new Date().toISOString()
         })
