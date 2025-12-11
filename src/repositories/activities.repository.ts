@@ -84,7 +84,7 @@ export class ActivityRepository {
                 params.push(`%${query.trackingtypeid}%`);
             }
 
-            sql += ' GROUP BY a.id';
+            sql += ' GROUP BY a.id order by a.name asc';
 
             const [rows] = await pool.query(sql, params) as any;
 

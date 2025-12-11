@@ -1,9 +1,10 @@
 import { generateToken } from "../helpers/token.helper";
 import { UserRepository } from "../repositories/users.repository";
 import AppError from "../types/error.type";
-import { UserRegisterInput, UserRegisterOutput, UserRegisterDto, UserLoginInput, UserLoginOutput, UserPasswordChangeInput } from "../types/users.type";
+import { UserRegisterInput, UserRegisterOutput, UserRegisterDto, UserLoginInput, UserLoginOutput, UserPasswordChangeInput, UserResetPasswordRequest, UserResetPasswordConfirmRequest } from "../types/users.type";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from 'uuid';
 
 export class AuthService {
     private repository = new UserRepository();
@@ -78,7 +79,63 @@ export class AuthService {
 
             return true;
         }
-        catch(err){
+        catch (err) {
+            const error = err as Error;
+            console.log(error.message);
+            throw error;
+        }
+    }
+
+    resetPassword = async (input: UserResetPasswordRequest): Promise<boolean> => {
+        try {
+            const data = await this.repository.findByEmail(input.email);
+            if (!data) {
+                throw new AppError(401, "User not found!");
+            }
+            const resetCode = uuidv4();
+            this.repository.updateResetCode(input.email, resetCode);
+            //send email
+            console.log(`mail sent to ${input.email}. code : ${resetCode}`)
+            return true;
+        }
+        catch (err) {
+            const error = err as Error;
+            console.log(error.message);
+            throw error;
+        }
+    }
+
+    resetPasswordStatus = async (resetcode:string): Promise<boolean> => {
+        try {
+            const data = await this.repository.findByResetCode(resetcode);
+            if (!data) {
+                throw new AppError(400, "Password reset code is not valid!");
+            }
+            return true;
+        }
+        catch (err) {
+            const error = err as Error;
+            console.log(error.message);
+            throw error;
+        }
+    }
+
+    resetPasswordConfirm = async (resetcode:string,input:UserResetPasswordConfirmRequest): Promise<boolean> => {
+        try {
+            console.log(resetcode,input)
+            const data = await this.repository.findByResetCode(resetcode);
+            if (!data) {
+                throw new AppError(400, "Password reset code is not valid!");
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(input.password, salt);
+
+            await this.repository.updatePassword(data?.id,hashedPassword);
+            await this.repository.updateResetCode(data?.email,null);
+            return true;
+        }
+        catch (err) {
             const error = err as Error;
             console.log(error.message);
             throw error;

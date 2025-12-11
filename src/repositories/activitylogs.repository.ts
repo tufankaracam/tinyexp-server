@@ -77,6 +77,8 @@ export class ActivityLogsRepository {
                 params.push(`${query.activityid}`);
             }
 
+            sql += ' order by id desc'
+
             const [rows] = await pool.query(sql, params) as any;
 
             return rows;
