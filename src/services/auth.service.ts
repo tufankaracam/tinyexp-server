@@ -5,6 +5,7 @@ import { UserRegisterInput, UserRegisterOutput, UserRegisterDto, UserLoginInput,
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
+import { sendResetPasswordMail } from "../utils/mailer";
 
 export class AuthService {
     private repository = new UserRepository();
@@ -94,8 +95,7 @@ export class AuthService {
             }
             const resetCode = uuidv4();
             this.repository.updateResetCode(input.email, resetCode);
-            //send email
-            console.log(`mail sent to ${input.email}. code : ${resetCode}`)
+            await sendResetPasswordMail(data?.email,resetCode);
             return true;
         }
         catch (err) {
