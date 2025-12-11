@@ -5,12 +5,23 @@ export const TrackingTypeCreateRequestSchema = z.object({
     .min(1, 'Name must be at least 1 characters').meta({
       description: 'Tracking type name',
       example: 'Steps'
+    }).refine((val) => {
+      const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+      return !dangerousChars.test(val);
+    }, {
+      message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
     })
 });
 
 export const TrackingTypeQueryRequestSchema = z.object({
   name: z.string()
     .min(1, 'Name must be at least 1 characters')
+    .refine((val) => {
+      const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+      return !dangerousChars.test(val);
+    }, {
+      message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+    })
     .optional().meta({
       description: 'Filter by tracking type name',
       example: 'Steps'
@@ -22,12 +33,17 @@ export const TrackingTypeUpdateRequestSchema = z.object({
     .min(1, 'Name must be at least 1 characters').meta({
       description: 'Updated tracking type name',
       example: 'Distance'
+    }).refine((val) => {
+      const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+      return !dangerousChars.test(val);
+    }, {
+      message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
     })
 });
 
 export interface TrackingTypeResponse {
-    id: number,
-    name: string
+  id: number,
+  name: string
 }
 
 export type TrackingTypeCreateRequest = z.infer<typeof TrackingTypeCreateRequestSchema>;
@@ -35,42 +51,42 @@ export type TrackingTypeQueryRequest = z.infer<typeof TrackingTypeQueryRequestSc
 export type TrackingTypeUpdateRequest = z.infer<typeof TrackingTypeUpdateRequestSchema>;
 
 export interface TrackingTypeOutput {
-    id: number,
-    name: string
+  id: number,
+  name: string
 }
 
 export interface TrackingTypeCreateInput {
-    name: string,
-    userid:number
+  name: string,
+  userid: number
 }
 
 export interface TrackingTypeQueryInput {
-    name?: string,
-    userid:number
+  name?: string,
+  userid: number
 }
 
 export interface TrackingTypeUpdateInput {
-    name: string,
-    userid:number
+  name: string,
+  userid: number
 }
 
 export interface TrackingTypeCreateDto {
-    name: string,
-    userid:number
+  name: string,
+  userid: number
 }
 
-export interface TrackingTypeQueryDto{
-    name?:string,
-    userid:number
+export interface TrackingTypeQueryDto {
+  name?: string,
+  userid: number
 }
 
 export interface TrackingTypeUpdateDto {
-    id: number,
-    name: string,
-    userid:number
+  id: number,
+  name: string,
+  userid: number
 }
 
 export interface TrackingTypeDbo {
-    id: number,
-    name: string
+  id: number,
+  name: string
 }

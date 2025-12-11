@@ -76,7 +76,7 @@ export class SubCategoryRepository {
                 params.push(query.categoryid);
             }
 
-            sql += ' GROUP BY sc.id';
+            sql += ' GROUP BY sc.id order by sc.name asc';
 
             const [rows] = await pool.query(sql, params) as any;
 

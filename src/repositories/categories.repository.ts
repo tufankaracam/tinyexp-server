@@ -78,7 +78,7 @@ export class CategoryRepository {
             }
 
             // 3. Tüm bu toplamları Kategori ID'sine göre paketliyoruz.
-            sql += ' GROUP BY c.id';
+            sql += ' GROUP BY c.id order by c.name asc';
 
             const [rows] = await pool.query(sql, params) as any;
 
@@ -92,8 +92,6 @@ export class CategoryRepository {
     }
     getCharacterData = async (query: CategoryQueryDto): Promise<CategoryDbo[]> => {
         try {
-            // 1. Zincirleme 3 adet LEFT JOIN ile en alt tabloya ulaşıyoruz.
-            // c: categories, sc: subcategories, a: activities, al: activitylogs
             let sql = `
             SELECT 
                 COUNT(DISTINCT c.id) as categorycount,

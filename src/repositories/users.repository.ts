@@ -34,8 +34,8 @@ export class UserRepository {
             throw error;
         }
     }
-    
-    updatePassword = async (id: number,hashedpassword:string): Promise<boolean> => {
+
+    updatePassword = async (id: number, hashedpassword: string): Promise<boolean> => {
         try {
             const sql = 'update users set password = ? where id = ?';
             const [result] = await pool.execute<ResultSetHeader>(sql, [hashedpassword, id]);
@@ -48,6 +48,32 @@ export class UserRepository {
         }
     }
 
+    updateResetCode = async (email: string, resetcode?: (string | null)): Promise<string | null> => {
+        try {
+            const sql = 'update users set resetcode = ? where email = ?';
+            const [rows] = await pool.query(sql, [resetcode || null, email]) as any;
+            return rows[0];
+        }
+        catch (err) {
+            const error = err as Error;
+            console.error(`Database Error : ${error.message}`);
+            throw error;
+        }
+    }
+
+    findByResetCode = async (resetcode: string): Promise<UserDbo | null> => {
+        try {
+            const sql = 'select * from `users` where `resetcode` = ?';
+            const [rows] = await pool.query(sql, [resetcode]) as any;
+
+            return rows[0] || null;
+        }
+        catch (err) {
+            const error = err as Error;
+            console.error(`Database Error : ${error.message}`);
+            throw error;
+        }
+    }
 
     findByEmail = async (email: string): Promise<UserDbo | null> => {
         try {
@@ -61,6 +87,8 @@ export class UserRepository {
             throw error;
         }
     }
+
+
 
     findAll = async (): Promise<UserDbo[]> => {
         try {

@@ -11,7 +11,12 @@ export const CategoryCreateRequestSchema = z.object({
 
 export const CategoryQueryRequestSchema = z.object({
   name: z.string()
-    .min(3, 'Name must be at least 3 characters')
+    .min(3, 'Name must be at least 3 characters').refine((val) => {
+    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+    return !dangerousChars.test(val);
+  }, {
+    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+  })
     .optional().meta({
       description: 'Filter by category name',
       example: 'Health'
@@ -23,7 +28,12 @@ export const CategoryUpdateRequestSchema = z.object({
     .min(3, 'Name must be at least 3 characters').meta({
       description: 'Updated category name',
       example: 'Sports & Fitness'
-    })
+    }).refine((val) => {
+    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+    return !dangerousChars.test(val);
+  }, {
+    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+  })
 });
 
 export interface CategoryResponse {

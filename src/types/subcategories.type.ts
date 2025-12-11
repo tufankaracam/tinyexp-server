@@ -6,7 +6,12 @@ export const SubCategoryCreateRequestSchema = z.object({
     .min(3, 'name must be at least 3 characters').meta({
       description: 'Subcategory name',
       example: 'Running'
-    }),
+    }).refine((val) => {
+    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+    return !dangerousChars.test(val);
+  }, {
+    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+  }),
   categoryid: z.number().int('categoryid must be a number').meta({
     description: 'Parent category ID',
     example: 1
@@ -16,6 +21,12 @@ export const SubCategoryCreateRequestSchema = z.object({
 export const SubCategoryQueryRequestSchema = z.object({
   name: z.string()
     .min(3, 'name must be at least 3 characters')
+    .refine((val) => {
+    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+    return !dangerousChars.test(val);
+  }, {
+    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+  })
     .optional().meta({
       description: 'Filter by subcategory name',
       example: 'Running'
@@ -31,7 +42,12 @@ export const SubCategoryUpdateRequestSchema = z.object({
     .min(3, 'name must be at least 3 characters').meta({
       description: 'Updated subcategory name',
       example: 'Jogging'
-    }),
+    }).refine((val) => {
+    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+    return !dangerousChars.test(val);
+  }, {
+    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+  }),
   categoryid: z.number().int('categoryid must be a number')
 });
 

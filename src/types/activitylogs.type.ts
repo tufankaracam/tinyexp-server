@@ -21,7 +21,12 @@ export const ActivityLogsCreateRequestSchema = z.object({
       description: 'Activity datetime in ISO format',
       example: '2024-11-17T14:30'
     }),
-    activitynote: z.string().optional()
+    activitynote: z.string().refine((val) => {
+    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+    return !dangerousChars.test(val);
+  }, {
+    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+  }).optional()
 });
 
 export const ActivityLogsQueryRequestSchema = z.object({

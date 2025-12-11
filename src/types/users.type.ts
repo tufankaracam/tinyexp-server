@@ -9,7 +9,7 @@ export const UserRegisterRequestSchema = z.object({
     .min(3, 'Username must be at least 3 characters').meta({
       description: 'Username for the account',
       example: 'johndoe'
-    }),
+    }).regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores (_)."),
   password: z.string()
     .min(8, 'Password must be at least 8 characters').meta({
       description: 'Account password (minimum 8 characters)',
@@ -27,6 +27,14 @@ export const UserRegisterRequestSchema = z.object({
     path: ["password2"]
   }
 );
+
+export const UserResetPasswordSchema = z.object({
+  email: z.string().email("email must be valid").meta({
+    description: 'User email address',
+    example: 'user@example.com'
+  })
+});
+
 
 export const UserPasswordChangeRequestSchema = z.object({
   oldpassword: z.string()
@@ -64,9 +72,32 @@ export const UserLoginRequestSchema = z.object({
     })
 });
 
+export const UserResetPasswordConfirmRequestSchema = z.object({
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters').meta({
+      description: 'Account password (minimum 8 characters)',
+      example: 'securePass123!'
+    }),
+  password2: z.string()
+    .min(8, 'Password2 must be at least 8 characters').meta({
+      description: 'Password confirmation - must match password field',
+      example: 'securePass123!'
+    })
+}).refine(
+  (data) => data.password === data.password2,
+  {
+    message: "Passwords don't match",
+    path: ["password2"]
+  }
+);
+
 export type UserRegisterRequest = z.infer<typeof UserRegisterRequestSchema>;
 export type UserLoginRequest = z.infer<typeof UserLoginRequestSchema>;
 export type UserPasswordChangeRequest = z.infer<typeof UserPasswordChangeRequestSchema>;
+export type UserResetPasswordRequest = z.infer<typeof UserResetPasswordSchema>;
+export type UserResetPasswordConfirmRequest = z.infer<typeof UserResetPasswordConfirmRequestSchema>;
+
+
 export interface UserRegisterResponse {
   id: number,
   email: string,

@@ -6,6 +6,11 @@ export const ActivityCreateRequestSchema = z.object({
     .min(3, 'name must be at least 3 characters').meta({
       description: 'Activity name',
       example: 'Morning Run'
+    }).refine((val) => {
+      const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+      return !dangerousChars.test(val);
+    }, {
+      message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
     }),
   subcategoryid: z.number().int('subcategoryid must be a number').meta({
     description: 'Parent subcategory ID',
@@ -23,9 +28,16 @@ export const ActivityCreateRequestSchema = z.object({
     })
 });
 
+
 export const ActivityQueryRequestSchema = z.object({
   name: z.string()
     .min(3, 'name must be at least 3 characters')
+    .refine((val) => {
+      const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+      return !dangerousChars.test(val);
+    }, {
+      message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+    })
     .optional().meta({
       description: 'Filter by activity name',
       example: 'Running'
@@ -45,7 +57,12 @@ export const ActivityUpdateRequestSchema = z.object({
     .min(3, 'name must be at least 3 characters').meta({
       description: 'Updated activity name',
       example: 'Evening Jog'
-    }),
+    }).refine((val) => {
+    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+    return !dangerousChars.test(val);
+  }, {
+    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+  }),
   subcategoryid: z.number().int('subcategoryid must be a number').optional().meta({
     description: 'Parent subcategory ID',
     example: 1
@@ -68,7 +85,7 @@ export interface ActivityResponse {
   name: string,
   subcategoryid: number,
   trackingtypeid: number,
-  trackingtypename?:string,
+  trackingtypename?: string,
   minvalue: number,
   data?: ActivityLogsOutput[]
 }
@@ -86,7 +103,7 @@ export interface ActivityOutput {
   minvalue: number,
   activityvalue?: number,
   activityexp?: number,
-  activitylogcount?:number
+  activitylogcount?: number
 }
 
 export interface ActivityCreateInput {
@@ -146,5 +163,5 @@ export interface ActivityDbo {
   minvalue: number,
   activityvalue?: number,
   activityexp?: number,
-  activitylogcount?:number
+  activitylogcount?: number
 }
