@@ -92,7 +92,6 @@ export class ActivityLogsRepository {
 
     update = async (params: ActivityLogsUpdateDto): Promise<ActivityLogsDbo> => {
         try {
-            console.log(params);
             let calculatedExp: number | null = null;
 
             if (params.activityvalue) {

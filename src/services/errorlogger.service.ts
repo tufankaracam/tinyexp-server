@@ -1,4 +1,4 @@
-import winston,{format} from "winston";
+import winston, { format } from "winston";
 
 const errorLogger = winston.createLogger({
   level: 'error',

@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/health', async (req: Request, res: Response) => {
   try {
     await pool.query('SELECT 1');
-    
+
     res.status(200).json({
       status: 'UP',
       timestamp: new Date().toISOString(),

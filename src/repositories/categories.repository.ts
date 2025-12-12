@@ -49,8 +49,6 @@ export class CategoryRepository {
 
     findAll = async (query: CategoryQueryDto): Promise<CategoryDbo[]> => {
         try {
-            // 1. Zincirleme 3 adet LEFT JOIN ile en alt tabloya ulaşıyoruz.
-            // c: categories, sc: subcategories, a: activities, al: activitylogs
             let sql = `
             SELECT 
                 c.*,
@@ -68,16 +66,13 @@ export class CategoryRepository {
 
             const params: any[] = [];
 
-            // İlk soru işareti (?) userid olduğu için önce onu ekliyoruz.
             params.push(query.userid);
 
-            // 2. Filtreleme (Alias olarak 'c.' kullanıyoruz)
             if (query.name) {
                 sql += ' AND c.name LIKE ?';
                 params.push(`%${query.name}%`);
             }
 
-            // 3. Tüm bu toplamları Kategori ID'sine göre paketliyoruz.
             sql += ' GROUP BY c.id order by c.name asc';
 
             const [rows] = await pool.query(sql, params) as any;

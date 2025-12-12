@@ -21,7 +21,7 @@ export const ActivityLogsCreateRequestSchema = z.object({
       description: 'Activity datetime in ISO format',
       example: '2024-11-17T14:30'
     }),
-    activitynote: z.string().refine((val) => {
+  activitynote: z.string().refine((val) => {
     const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
     return !dangerousChars.test(val);
   }, {
@@ -57,7 +57,7 @@ export const ActivityLogsUpdateRequestSchema = z.object({
       description: 'Updated activity datetime in ISO format',
       example: '2024-11-17T15:45'
     }),
-    activitynote: z.string().optional().default("")
+  activitynote: z.string().optional().default("")
 });
 
 export interface ActivityLogsResponse {

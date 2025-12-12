@@ -58,11 +58,11 @@ export const ActivityUpdateRequestSchema = z.object({
       description: 'Updated activity name',
       example: 'Evening Jog'
     }).refine((val) => {
-    const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
-    return !dangerousChars.test(val);
-  }, {
-    message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
-  }),
+      const dangerousChars = /[<>'";`&,$\\|{}[\]]/;
+      return !dangerousChars.test(val);
+    }, {
+      message: "You can not use this special characters: < > ' \" ; ` & $ | \\ { } [ ]"
+    }),
   subcategoryid: z.number().int('subcategoryid must be a number').optional().meta({
     description: 'Parent subcategory ID',
     example: 1

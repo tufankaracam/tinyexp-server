@@ -94,8 +94,8 @@ export class SubCategoryController {
 
     delete = async (req: Request, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
         const subResult = await this.subService.findAll({ subcategoryid: Number(req.params.id), userid: req.user!.id });
-        if(subResult.length > 0){
-            throw new AppError(400,"Subcategory has items!");
+        if (subResult.length > 0) {
+            throw new AppError(400, "Subcategory has items!");
         }
         const result = await this.service.delete(Number(req.params.id), req.user!.id);
         res.status(200).json({

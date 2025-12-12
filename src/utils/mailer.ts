@@ -18,9 +18,6 @@ interface MailOptions {
     html: string;
 }
 
-
-
-
 export const sendEmail = async ({ to, subject, html }: MailOptions): Promise<boolean> => {
     try {
         const info = await transporter.sendMail({

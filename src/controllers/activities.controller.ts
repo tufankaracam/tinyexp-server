@@ -80,7 +80,6 @@ export class ActivityController {
     }
 
     update = async (req: Request<{ id?: number }, {}, ActivityUpdateRequest>, res: Response<ApiResponse<ActivityResponse>>, next: NextFunction): Promise<void> => {
-        console.log(req.body)
         const input: ActivityUpdateInput = {
             name: req.body.name,
             userid: req.user!.id,

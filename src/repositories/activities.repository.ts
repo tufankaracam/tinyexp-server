@@ -99,7 +99,6 @@ export class ActivityRepository {
 
     update = async (params: ActivityUpdateDto): Promise<ActivityDbo> => {
         try {
-            console.log(params);
             const query = 'UPDATE `activities` SET `name` = ?,`minvalue` = ?,`subcategoryid` = ? , `trackingtypeid` = ? where `id` = ? and `userid` = ?';
             const [result, fields] = await pool.execute<ResultSetHeader>(query, [params.name, params.minvalue, params.subcategoryid, params.trackingtypeid, params.id, params.userid]);
             const updatedData = await this.findById(params.id, params.userid);

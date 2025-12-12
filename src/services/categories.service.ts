@@ -6,7 +6,7 @@ import AppError from "../types/error.type";
 export class CategoryService {
     private repository = new CategoryRepository();
     private subRepository = new SubCategoryRepository();
-    
+
     create = async (input: CategoryCreateInput): Promise<CategoryOutput> => {
         try {
             const isExist = await this.repository.findByName(input.name, input.userid);
@@ -115,7 +115,7 @@ export class CategoryService {
 
     delete = async (id: number, userid: number): Promise<boolean> => {
         try {
-            
+
             const result = await this.repository.delete(id, userid);
             return result;
         }

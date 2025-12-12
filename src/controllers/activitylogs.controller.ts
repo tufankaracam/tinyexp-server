@@ -6,14 +6,14 @@ import { ApiResponse } from "../types/controller.type";
 
 export class ActivityLogsController {
     private service = new ActivityLogsService();
-    create = async (req: Request<{},{},ActivityLogsCreateRequest>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
-        const input:ActivityLogsCreateInput = {
-            activityid:req.body.activityid,
-            activityvalue:req.body.activityvalue,
-            activitydatetime:req.body.activitydatetime,
-            userid:req.user!.id,
-            activitynote:req.body.activitynote || ""
-        } 
+    create = async (req: Request<{}, {}, ActivityLogsCreateRequest>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
+        const input: ActivityLogsCreateInput = {
+            activityid: req.body.activityid,
+            activityvalue: req.body.activityvalue,
+            activitydatetime: req.body.activitydatetime,
+            userid: req.user!.id,
+            activitynote: req.body.activitynote || ""
+        }
         const result = await this.service.create(input);
         const output: ActivityLogsResponse = {
             id: result.id,
@@ -30,8 +30,8 @@ export class ActivityLogsController {
         });
     }
 
-    findById = async (req: Request<{id?:number}>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
-        const result = await this.service.findById(Number(req.params.id),req.user!.id);
+    findById = async (req: Request<{ id?: number }>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
+        const result = await this.service.findById(Number(req.params.id), req.user!.id);
 
 
         if (result) {
@@ -42,11 +42,11 @@ export class ActivityLogsController {
                 activitydatetime: result.activitydatetime
             }
             res.status(200).json({
-            success: true,
-            message: "Activity log found!",
-            data: output,
-            timestamp: new Date().toISOString()
-        });
+                success: true,
+                message: "Activity log found!",
+                data: output,
+                timestamp: new Date().toISOString()
+            });
             return;
         }
 
@@ -58,10 +58,10 @@ export class ActivityLogsController {
         });
     }
 
-    findAll = async (req: Request<{},{},{},ActivityLogsQueryRequest>, res: Response<ApiResponse<ActivityLogsResponse[]>>, next: NextFunction): Promise<void> => {
-        const input:ActivityLogsQueryInput = {
-            activityid:req.query.activityid,
-            userid:req.user!.id
+    findAll = async (req: Request<{}, {}, {}, ActivityLogsQueryRequest>, res: Response<ApiResponse<ActivityLogsResponse[]>>, next: NextFunction): Promise<void> => {
+        const input: ActivityLogsQueryInput = {
+            activityid: req.query.activityid,
+            userid: req.user!.id
         }
 
         const result = await this.service.findAll(input);
@@ -73,13 +73,13 @@ export class ActivityLogsController {
         });
     }
 
-    update = async (req: Request<{id?:number},{},ActivityLogsUpdateRequest>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
-        const input:ActivityLogsUpdateInput = {
-            activityid:req.body.activityid,
-            activityvalue:req.body.activityvalue,
-            activitydatetime:req.body.activitydatetime,
-            activitynote:req.body.activitynote,
-            userid:req.user!.id,
+    update = async (req: Request<{ id?: number }, {}, ActivityLogsUpdateRequest>, res: Response<ApiResponse<ActivityLogsResponse>>, next: NextFunction): Promise<void> => {
+        const input: ActivityLogsUpdateInput = {
+            activityid: req.body.activityid,
+            activityvalue: req.body.activityvalue,
+            activitydatetime: req.body.activitydatetime,
+            activitynote: req.body.activitynote,
+            userid: req.user!.id,
         }
         const result = await this.service.update(Number(req.params.id), input);
         res.status(200).json({
@@ -90,8 +90,8 @@ export class ActivityLogsController {
         });
     }
 
-    delete = async (req: Request<{id?:number}>, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
-        const result = await this.service.delete(Number(req.params.id),req.user!.id);
+    delete = async (req: Request<{ id?: number }>, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
+        const result = await this.service.delete(Number(req.params.id), req.user!.id);
         res.status(200).json({
             success: true,
             message: "Activity log deleted succesfully",
