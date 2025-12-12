@@ -81,7 +81,7 @@ export class AuthController {
         })
     }
 
-    resetPasswordStatus = async (req: Request<{resetcode?:string},{},{}>, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
+    resetPasswordStatus = async (req: Request<{ resetcode?: string }, {}, {}>, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
         const output = await this.service.resetPasswordStatus(req.params?.resetcode!);
         res.status(200).json({
             success: true,
@@ -91,12 +91,12 @@ export class AuthController {
         })
     }
 
-    resetPasswordConfirm = async (req: Request<{resetcode?:string}, {}, UserResetPasswordConfirmRequest>, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
+    resetPasswordConfirm = async (req: Request<{ resetcode?: string }, {}, UserResetPasswordConfirmRequest>, res: Response<ApiResponse<boolean>>, next: NextFunction): Promise<void> => {
         const input: UserResetPasswordConfirmRequest = {
             password: req.body.password,
             password2: req.body.password2,
         };
-        const output = await this.service.resetPasswordConfirm(req.params.resetcode!,input);
+        const output = await this.service.resetPasswordConfirm(req.params.resetcode!, input);
 
         res.status(200).json({
             success: true,

@@ -12,14 +12,6 @@ export const validateRequest = (schema: ZodSchema, validationType: ('body' | 'pa
         }
         catch (error) {
             if (error instanceof ZodError) {
-                /* console.log(error.issues)
-                res.status(400).json({
-                    errors: error.issues.map(e => ({
-                        field: e.path.join('.'),
-                        message: e.message
-                    }))
-                });
-                return; */
                 const formattedErrors = error.issues.reduce((acc, issue) => {
                     const fieldName = issue.path.join('.');
                     acc[fieldName] = issue.message;

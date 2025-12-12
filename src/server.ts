@@ -7,17 +7,17 @@ const startServer = async () => {
 		const conn = await pool.getConnection();
 		console.log(`Database connection successfully!`);
 		conn.release();
-		
+
 		const server = app.listen(config.PORT, () => {
 			console.log(`Server running on ${config.PORT}`);
 		});
 
 		const gracefulShutdown = async () => {
 			console.log('⏹️ Shutdown signal received, closing connections...');
-			
+
 			server.close(async () => {
 				console.log('✅ HTTP server closed');
-				
+
 				try {
 					await pool.end();
 					console.log('✅ Database connection closed');
@@ -27,7 +27,7 @@ const startServer = async () => {
 					process.exit(1);
 				}
 			});
-			
+
 			setTimeout(() => {
 				console.error('⚠️ Force shutdown after 30s timeout');
 				process.exit(1);
@@ -36,7 +36,7 @@ const startServer = async () => {
 
 		process.on('SIGTERM', gracefulShutdown);
 		process.on('SIGINT', gracefulShutdown);
-		
+
 		process.on('unhandledRejection', (reason, promise) => {
 			console.error('Unhandled Rejection:', reason);
 			process.exit(1);

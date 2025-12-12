@@ -29,11 +29,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(compression());
 app.use(accessLogger);
 
-app.use((req,res,next)=>{
-  console.log(`url: ${req.url} | method : ${req.method}`)
-  next()
-})
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
   swaggerOptions: {
     persistAuthorization: true,

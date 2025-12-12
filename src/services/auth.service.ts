@@ -95,7 +95,7 @@ export class AuthService {
             }
             const resetCode = uuidv4();
             this.repository.updateResetCode(input.email, resetCode);
-            await sendResetPasswordMail(data?.email,resetCode);
+            await sendResetPasswordMail(data?.email, resetCode);
             return true;
         }
         catch (err) {
@@ -105,7 +105,7 @@ export class AuthService {
         }
     }
 
-    resetPasswordStatus = async (resetcode:string): Promise<boolean> => {
+    resetPasswordStatus = async (resetcode: string): Promise<boolean> => {
         try {
             const data = await this.repository.findByResetCode(resetcode);
             if (!data) {
@@ -120,9 +120,9 @@ export class AuthService {
         }
     }
 
-    resetPasswordConfirm = async (resetcode:string,input:UserResetPasswordConfirmRequest): Promise<boolean> => {
+    resetPasswordConfirm = async (resetcode: string, input: UserResetPasswordConfirmRequest): Promise<boolean> => {
         try {
-            console.log(resetcode,input)
+            console.log(resetcode, input)
             const data = await this.repository.findByResetCode(resetcode);
             if (!data) {
                 throw new AppError(400, "Password reset code is not valid!");
@@ -131,8 +131,8 @@ export class AuthService {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(input.password, salt);
 
-            await this.repository.updatePassword(data?.id,hashedPassword);
-            await this.repository.updateResetCode(data?.email,null);
+            await this.repository.updatePassword(data?.id, hashedPassword);
+            await this.repository.updateResetCode(data?.email, null);
             return true;
         }
         catch (err) {

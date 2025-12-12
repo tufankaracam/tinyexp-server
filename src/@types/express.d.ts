@@ -1,5 +1,5 @@
 import 'express';
-import {UserToken} from '../types/users.type';
+import { UserToken } from '../types/users.type';
 
 declare global {
   namespace Express {

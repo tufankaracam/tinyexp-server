@@ -9,12 +9,12 @@ import HealthCheckRouter from './healthcheck.route';
 
 const router = Router();
 
-router.use('/categories',CategoryRouter);
-router.use('/subcategories',SubCategoryRouter);
-router.use('/trackingtypes',TrackingTypeRouter);
-router.use('/activities',ActivityRouter);
-router.use('/activitylogs',ActivityLogsRouter);
-router.use('/auth',AuthRouter);
-router.use('/healthcheck',HealthCheckRouter);
+router.use('/categories', CategoryRouter);
+router.use('/subcategories', SubCategoryRouter);
+router.use('/trackingtypes', TrackingTypeRouter);
+router.use('/activities', ActivityRouter);
+router.use('/activitylogs', ActivityLogsRouter);
+router.use('/auth', AuthRouter);
+router.use('/healthcheck', HealthCheckRouter);
 
 export default router;
